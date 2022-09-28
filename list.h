@@ -1,8 +1,8 @@
 // =================================================================
 //
 // File: list.h
-// Author:
-// Date:
+// Author: Alain Vicencio Arizabalo
+// Date: 28/09/2022
 // 
 // =================================================================
 #ifndef LIST_H
@@ -216,17 +216,41 @@ T List<T>::last() const {
 }
 
 // =================================================================
+// TO DO #1
+// 
 // Returns the element that is in the position indicated by index.
-//
+// 
 // @returns the element in index
+// 
 // @throws IndexOutOfBounds, if index >= size.
+//
+// COMPLEJIDAD: O(n)
 // =================================================================
 template <class T>
 T List<T>::get(uint index) const {
 	T aux;
+	Node <T> *p;
 
-	// TO DO
-	return aux;
+	if (index == 0){                 //O(1)
+		front();
+	}
+
+	if (index == (size-1)){          //O(1)
+		last();
+	}
+
+	if (index >= size){              //O(1)
+		throw IndexOutOfBounds();
+	}
+
+	p = head;
+	int saltos=0;
+	while(p->next != NULL && saltos != index){      //O(n) -----> Peor caso
+		p = p->next;
+		saltos++;
+	} 
+
+	return p->value;
 }
 
 // =================================================================
@@ -268,14 +292,47 @@ void List<T>::push_back(T val) {
 }
 
 // =================================================================
+// TO DO #2
+// 
 // Add an element in index (0 <= index <= size). The element that
+// 
 // was in that position is shifted to the right.
-//
+// 
 // @throws IndexOutOfBounds, if index > size.
+// 
+// COMPLEJIDAD: O(n)
 // =================================================================
 template <class T>
 void List<T>::insert_at(T val, uint index) {
-	// TO DO
+	Node <T> *p, *q;
+
+	if (index == 0){                 //O(1)
+		return push_front(val);
+		
+	}
+
+	if (index == size){              //O(1)
+		return push_back(val);
+		
+	}
+
+
+	if (0 > index || index > size){      //O(1)
+		throw IndexOutOfBounds();
+	}
+
+	p = head;
+	int saltos=0;
+	while (p->next != NULL && saltos != (index-1)){     //O(n) -----> Peor caso
+		saltos++;
+		p = p->next; 
+	}
+	
+	q = new Node<T>(val);
+	q->next = p->next;
+	p->next = q;
+	size++;
+
 }
 
 // =================================================================
@@ -339,28 +396,96 @@ T List<T>::pop_back() {
 }
 
 // =================================================================
-// Delete the element found in index (0 <= index <size).
+// TO DO #3
 //
+// Delete the element found in index (0 <= index <size).
+// 
 // @returns the element that was in index.
+//
 // @throws IndexOutOfBounds, if index >= size.
+//
+// COMPLEJIDAD: O(n)
 // =================================================================
 template <class T>
 T List<T>::remove_at(uint index) {
-	T aux;
-	// TO DO
+	T aux;  // el valor del nodo a borraer 
+	Node<T> *p, *q;
+
+	if (empty()) {       //O(1)
+		throw NoSuchElement();
+	}
+
+	if (index == 0){      //O(1)
+		return pop_front();
+		
+	}
+
+	if (index == (size -1)){     //O(1)
+		return pop_back();
+		
+	}
+
+	if (0 > index || index > size){       //O(1)
+		throw IndexOutOfBounds();
+	}
+
+	q = NULL;
+	p = head;
+	int saltos = 0;
+	while (p->next != NULL && saltos != index) {    //O(n) -------> Peor caso
+		q = p;
+		p = p->next;
+		saltos++;
+	}
+
+	q->next = p->next;
+	aux = p->value;
+
+	delete p;
+	size--;
+
 	return aux;
 }
 
+
+
+
 // =================================================================
+// TO DO #4
+//
 // Returns the position of an item in the list.
 //
 // @returns the position of an item in the list, -1 otherwise.
-// @throws IndexOutOfBounds, if index >= size.
+//
+// COMPLEJIDAD: O(n)
 // =================================================================
 template <class T>
 long int List<T>::indexOf(T val) const {
-	// TO DO
+
+	Node<T> *p;
+
+	p = head;
+
+//	int saltos = 0;
+//	while (p->next != NULL) {
+//		if (p->value == val){
+//			return saltos;
+//		}
+//		p=p->next;
+//		saltos++;
+//
+//	}
+	
+	for(long int i=0; i < size; i++) {   //O(n) ---> Peor caso
+		if (p->value == val){
+			return i;
+		}
+		p=p->next;		
+	}
+
 	return -1;
+
+
 }
 
 #endif /* LIST_H */
